@@ -1,0 +1,58 @@
+#pragma once
+#include<string>
+#include<iostream>
+#include<boost/asio.hpp>
+#include "const.h"
+
+class MsgNode
+{
+public:
+	MsgNode(short max_len):_total_len(max_len),_cur_len(0)
+	{
+		_data = new char[_total_len + 1]; //多分配一个字节存放结束符
+		_data[_total_len] = '\0';
+	}
+
+	~MsgNode()
+	{
+		std::cout << "MsgNode destructed" << std::endl;
+		if (_data)
+		{
+			delete[] _data;
+			_data = nullptr;
+		}
+	}
+
+	void Clear()
+	{
+		::memset(_data,0,_total_len);
+		_cur_len = 0;
+	}
+
+	short _cur_len;
+	short _total_len;
+	char* _data;
+};
+
+class RecvNode:public MsgNode
+{
+public:
+	RecvNode(short max_len, short msg_id);
+
+	~RecvNode(){}
+
+private:
+	short _msg_id;
+};
+
+class SendNode :public MsgNode
+{
+public:
+	SendNode(const char* msg, short max_len, short msg_id);
+	~SendNode() {}
+
+private:
+	short _msg_id;
+};
+
+
