@@ -6,3 +6,8 @@
 #define HEAD_TOTAL_LEN 4	//消息头总长度
 #define HEAD_ID_LEN 2	//消息头ID长度
 #define HEAD_DATA_LEN 2	//消息头数据长度
+
+enum MSG_IDS
+{
+	MSG_HELLO_WORLD = 1001
+};

@@ -1,7 +1,6 @@
 //2026.2.4 异步通信 echo 服务器 CSession 和 Server 类的定义头文件
 
 #pragma once
-
 #include <queue>
 #include "json/json.h"
 #include "json/reader.h"
@@ -9,10 +8,14 @@
 #include "const.h"
 #include "MsgNode.h"
 #include "CServer.h"
+#include "LogicNode.h"
 
 using boost::asio::ip::tcp;
 
 class CServer;
+class MsgNode;
+class RecvNode;
+class SendNode;
 
 class CSession :public std::enable_shared_from_this<CSession>	//使用 enable_shared_from_this 以便在异步操作中获取 shared_ptr
 {

@@ -6,6 +6,7 @@
 #include<iostream>
 #include <map>
 #include "CSession.h"
+#include "AsioIOServicePool.h"
 
 using boost::asio::ip::tcp;
 
@@ -17,8 +18,8 @@ public:
 	void ClearCSession(std::string uuid);
 
 private:
-	void start_accept();
-	void handle_accept(std::shared_ptr<CSession> new_CSession, const boost::system::error_code& ec);
+	void StartAccept();
+	void HandleAccept(std::shared_ptr<CSession> new_CSession, const boost::system::error_code& ec);
 
 	boost::asio::io_context& _ioc;
 	tcp::acceptor _acceptor;

@@ -3,6 +3,9 @@
 #include<iostream>
 #include<boost/asio.hpp>
 #include "const.h"
+#include "LogicSystem.h"
+
+class LogicSystem;
 
 class MsgNode
 {
@@ -36,10 +39,19 @@ public:
 
 class RecvNode:public MsgNode
 {
+	friend class LogicSystem;
 public:
 	RecvNode(short max_len, short msg_id);
 
-	~RecvNode(){}
+	~RecvNode()
+	{
+		std::cout << "RecvNode destructed" << std::endl;
+		if (_data)
+		{
+			delete[] _data;
+			_data = nullptr;
+		}
+	}
 
 private:
 	short _msg_id;
@@ -47,9 +59,18 @@ private:
 
 class SendNode :public MsgNode
 {
+	friend class LogicSystem;
 public:
 	SendNode(const char* msg, short max_len, short msg_id);
-	~SendNode() {}
+	~SendNode()
+	{
+		std::cout << "SendNode destructed" << std::endl;
+		if (_data)
+		{
+			delete[] _data;
+			_data = nullptr;
+		}
+	}
 
 private:
 	short _msg_id;

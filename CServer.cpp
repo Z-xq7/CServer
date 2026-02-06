@@ -5,7 +5,7 @@ CServer::CServer(boost::asio::io_context& ioc, short port) :_ioc(ioc),
 _acceptor(ioc, tcp::endpoint(tcp::v4(), port))
 {
 	std::cout << "CServer started on port " << port << std::endl;
-	start_accept();
+	StartAccept();
 }
 
 void CServer::ClearCSession(std::string uuid)
@@ -22,18 +22,19 @@ void CServer::ClearCSession(std::string uuid)
 	}
 }
 
-void CServer::start_accept()
+void CServer::StartAccept()
 {
-	shared_ptr<CSession> new_CSession = std::make_shared<CSession>(_ioc, this);
+	auto& io_context = AsioIOServicePool::GetInstance()->GetIOService();
+	shared_ptr<CSession> new_CSession = std::make_shared<CSession>(io_context, this);
 	_acceptor.async_accept(new_CSession->Socket(),
 		[this, new_CSession](const boost::system::error_code& ec)
 		{
-			this->handle_accept(new_CSession, ec);
+			this->HandleAccept(new_CSession, ec);
 		}
 	);
 }
 
-void CServer::handle_accept(shared_ptr<CSession> new_CSession, const boost::system::error_code& ec)
+void CServer::HandleAccept(shared_ptr<CSession> new_CSession, const boost::system::error_code& ec)
 {
 	if (!ec)
 	{
@@ -45,5 +46,5 @@ void CServer::handle_accept(shared_ptr<CSession> new_CSession, const boost::syst
 		std::cout << "Accept error: " << ec.message() << std::endl;
 	}
 
-	start_accept();
+	StartAccept();
 }

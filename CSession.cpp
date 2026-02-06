@@ -96,29 +96,8 @@ void CSession::HandleRead(const boost::system::error_code& ec, std::size_t bytes
                     _recv_msg_node->_data[_recv_msg_node->_total_len] = '\0';
                     std::cout << "receive data is " << _recv_msg_node->_data << std::endl;
 
-     //               //反序列化protobuf
-					//MsgData msgdata;
-     //               std::string receive_data;
-					//msgdata.ParseFromArray(_recv_msg_node->_data, _recv_msg_node->_total_len);
-					//std::cout << "msgdata id is " << msgdata.id() << ", data is " << msgdata.data() << std::endl;
-
-					//std::string return_str = "echo: " + msgdata.data();
-     //               MsgData msgreturn;
-					//msgreturn.set_id(msgdata.id());
-					//msgreturn.set_data(return_str);
-     //               //序列化
-     //               msgreturn.SerializeToString(&return_str);
-
-                    //反序列化Json
-                    Json::Value root;
-                    Json::Reader reader;
-                    reader.parse(std::string(_recv_msg_node->_data, _recv_msg_node->_total_len), root);
-					std::cout << "json id is " << root["id"].asInt() << ", data is " << root["data"].asString() << std::endl;
-                    root["data"] = "echo: " + root["data"].asString();
-                    std::string return_str = root.toStyledString();
-
-                    //此处可以调用Send发送测试
-					Send(return_str,root["id"].asInt());
+					//将收到的完整消息交给逻辑处理系统
+                    LogicSystem::GetInstance()->PostMsgToQue(std::make_shared<LogicNode>(shared_from_this(), _recv_msg_node));
 
                     //继续轮询剩余未处理数据
                     _b_head_parse = false;
@@ -165,29 +144,8 @@ void CSession::HandleRead(const boost::system::error_code& ec, std::size_t bytes
                 _recv_msg_node->_data[_recv_msg_node->_total_len] = '\0';
                 cout << "receive data is " << _recv_msg_node->_data << endl;
 
-                ////反序列化
-                //MsgData msgdata;
-                //std::string receive_data;
-                //msgdata.ParseFromArray(_recv_msg_node->_data, _recv_msg_node->_total_len);
-                //std::cout << "msgdata id is " << msgdata.id() << ", data is " << msgdata.data() << std::endl;
-
-                //std::string return_str = "echo: " + msgdata.data();
-                //MsgData msgreturn;
-                //msgreturn.set_id(msgdata.id());
-                //msgreturn.set_data(return_str);
-                //msgreturn.SerializeToString(&return_str);
-
-                //反序列化Json
-                Json::Value root;
-                Json::Reader reader;
-                reader.parse(std::string(_recv_msg_node->_data, _recv_msg_node->_total_len), root);
-                std::cout << "json id is " << root["id"].asInt() << ", data is " << root["data"].asString() << std::endl;
-                root["data"] = "echo: " + root["data"].asString();
-                std::string return_str = root.toStyledString();
-
-                //此处可以调用Send发送测试
-                Send(return_str,root["id"].asInt());
-                //Send(_recv_msg_node->_data, _recv_msg_node->_total_len);
+				//将收到的完整消息交给逻辑处理系统
+                LogicSystem::GetInstance()->PostMsgToQue(std::make_shared<LogicNode>(shared_from_this(), _recv_msg_node));
 
                 //继续轮询剩余未处理数据
                 _b_head_parse = false;
